@@ -1,18 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isspace.c                                       :+:      :+:    :+:   */
+/*   simulation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/14 10:39:37 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/14 14:58:42 by ematon           ###   ########.fr       */
+/*   Created: 2025/03/14 14:20:24 by ematon            #+#    #+#             */
+/*   Updated: 2025/03/16 19:21:18 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	ft_isspace(char c)
+int	simulation(t_data data)
 {
-	return (c == ' ' || (c >= '\t' && c <= '\r'));
+	if (gettimeofday(&data.start, NULL))
+		return (1);
+	return (0);
 }

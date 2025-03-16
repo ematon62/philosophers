@@ -6,11 +6,11 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 10:39:13 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/14 10:39:24 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/14 14:20:54 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philosophers.h"
 
 int	ft_atoi(const char *nptr)
 {

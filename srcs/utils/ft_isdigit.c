@@ -6,11 +6,11 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 17:08:06 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/14 12:08:25 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/14 14:21:03 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philosophers.h"
 
 int	ft_isdigit(int c)
 {

@@ -6,11 +6,11 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 18:55:50 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/14 11:39:21 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/16 19:20:13 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philosophers.h"
 
 static int	is_overflow(char *str, int i, int n)
 {
@@ -81,6 +81,6 @@ t_data	parse(char **argv)
 		i++;
 	}
 	if (data.nb_philo < 1)
-		return (ft_putstr_fd(NB_PHILO_ERROR, STDERR_FILENO), data);
+		return (ft_putstr_fd(NB_PHILO_ERROR, STDERR_FILENO), exit(1), data);
 	return (data);
 }

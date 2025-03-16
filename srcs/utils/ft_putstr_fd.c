@@ -6,16 +6,11 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 10:40:00 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/14 10:40:10 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/14 15:37:32 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
-
-static void	ft_putchar_fd(char c, int fd)
-{
-	write(fd, &c, 1);
-}
+#include "philosophers.h"
 
 void	ft_putstr_fd(char *s, int fd)
 {
@@ -24,7 +19,7 @@ void	ft_putstr_fd(char *s, int fd)
 	i = 0;
 	while (s[i])
 	{
-		ft_putchar_fd(s[i], fd);
 		i++;
 	}
+	write(fd, s, i);
 }

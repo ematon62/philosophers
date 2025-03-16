@@ -9,6 +9,7 @@ MAKEFLAGS += --no-print-directory
 
 SRCS := $(SRCS_PATH)/main.c \
 		$(SRCS_PATH)/parsing.c \
+		$(SRCS_PATH)/simulation.c \
 		$(SRCS_PATH)/utils/ft_atoi.c \
 		$(SRCS_PATH)/utils/ft_isspace.c \
 		$(SRCS_PATH)/utils/ft_putstr_fd.c \

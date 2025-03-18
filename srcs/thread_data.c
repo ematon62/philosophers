@@ -6,13 +6,13 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 09:23:25 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/18 10:14:13 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/18 16:15:01 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static t_philo	*get_thread_data(int i, t_data *data, pthread_mutex_t **forks)
+static t_philo	*get_thread_data(int i, t_data *data, t_sim_state *simstate)
 {
 	t_philo	*philo;
 	int		left_index;
@@ -35,11 +35,11 @@ static t_philo	*get_thread_data(int i, t_data *data, pthread_mutex_t **forks)
 		philo->max_index = left_index;
 		philo->min_index = right_index;
 	}
-	philo->forks_ptr = *forks;
+	philo->sim_state = simstate;
 	return (philo);
 }
 
-t_philo	**init_philo(t_data *data, pthread_mutex_t **forks)
+t_philo	**init_philo(t_data *data, t_sim_state *simstate)
 {
 	t_philo	**philo_data;
 	int		i;
@@ -50,7 +50,7 @@ t_philo	**init_philo(t_data *data, pthread_mutex_t **forks)
 	i = 0;
 	while (i < data->nb_philo)
 	{
-		philo_data[i] = get_thread_data(i, data, forks);
+		philo_data[i] = get_thread_data(i, data, simstate);
 		if (!philo_data[i])
 			return (ft_free_toodee((void **)philo_data), NULL);
 		i++;

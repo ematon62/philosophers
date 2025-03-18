@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:58:56 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/18 11:06:00 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/18 16:15:55 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,13 @@
 # define THINK "%ld %d is thinking\n"
 # define DIE "%ld %d has died\n"
 
-//Durations
-# define EAT_DURATION philo->data->time_eat * 1000
-# define SLEEP_DURATION philo->data->time_sleep * 1000
+typedef struct s_sim_state
+{
+	pthread_mutex_t	*forks_ptr;
+	pthread_mutex_t	write_perm;
+	pthread_mutex_t	*last_time_eaten;
+	bool			initialized;
+}	t_sim_state;
 
 typedef struct s_data
 {
@@ -60,7 +64,8 @@ typedef struct s_philo
 	int				min_index;
 	int				max_index;
 	t_data			*data;
-	pthread_mutex_t	*forks_ptr;
+	long int		time_since_last;
+	t_sim_state		*sim_state;
 }	t_philo;
 
 //Lib
@@ -74,14 +79,16 @@ void			ft_free_toodee(void **ptr);
 t_data			parse(char **argv);
 
 //Simulation
+t_sim_state		init_simulation(t_data data);
+int				destroy_simulation(t_sim_state sim_state, t_data data);
+t_philo			**init_philo(t_data *data, t_sim_state *simstate);
 int				simulation(t_data data);
-t_philo			**init_philo(t_data *data, pthread_mutex_t **forks);
-pthread_mutex_t	*init_forks(int nb_philos);
-int				destroy_forks(pthread_mutex_t *forks, int end);
+void			*routine(void *input);
 
 //Utils
 int				left(int index);
 int				right(int index, int nb_philo);
-time_t			get_current_time(t_philo *philo);
+time_t			get_time_since_last_meal(t_philo *philo);
+void			event(char *s, t_philo *philo);
 
 #endif

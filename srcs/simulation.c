@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 14:20:24 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/18 11:06:12 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/18 15:23:53 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,35 +34,14 @@ dés qu'un philosophe meurt
 - Comment tuer un philosophe au moment exact ou il est censé mourrir?
 */
 
-void	*routine(void *input)
-{
-	t_philo	*philo;
-
-	philo = (t_philo *)input;
-	while (1)
-	{
-		printf(THINK, get_current_time(philo), philo->id + 1);
-		pthread_mutex_lock(&philo->forks_ptr[philo->min_index]);
-		printf(TAKE, get_current_time(philo), philo->id + 1);
-		pthread_mutex_lock(&philo->forks_ptr[philo->max_index]);
-		printf(TAKE, get_current_time(philo), philo->id + 1);
-		printf(EAT, get_current_time(philo), philo->id + 1);
-		usleep(EAT_DURATION);
-		pthread_mutex_unlock(&philo->forks_ptr[philo->max_index]);
-		pthread_mutex_unlock(&philo->forks_ptr[philo->min_index]);
-		printf(SLEEP, get_current_time(philo), philo->id + 1);
-		usleep(SLEEP_DURATION);
-	}
-}
-
-int	start_threads(t_data *data, pthread_mutex_t *forks,
+int	start_threads(t_data *data, t_sim_state *simstate,
 	pthread_t *philosophers)
 {
-	int			i;
-	t_philo		**philo_data;
+	int				i;
+	t_philo			**philo_data;
 
 	i = 0;
-	philo_data = init_philo(data, &forks);
+	philo_data = init_philo(data, simstate);
 	if (!philo_data)
 		return (ft_putstr_fd(MALLOC, STDERR_FILENO), 1);
 	while (i < data->nb_philo)
@@ -81,20 +60,21 @@ int	start_threads(t_data *data, pthread_mutex_t *forks,
 
 int	simulation(t_data data)
 {
-	pthread_mutex_t		*forks;
+	t_sim_state			sim_state;
 	pthread_t			*philosophers;
 	int					exit_status;
 
 	if (gettimeofday(&data.start, NULL))
 		return (1);
-	forks = init_forks(data.nb_philo);
-	if (!forks)
+	sim_state = init_simulation(data);
+	if (!sim_state.initialized)
 		return (1);
 	philosophers = malloc(sizeof(pthread_t) * data.nb_philo);
 	if (!philosophers)
-		return (ft_putstr_fd(MALLOC, STDERR_FILENO), 1);
-	exit_status = start_threads(&data, forks, philosophers);
-	destroy_forks(forks, data.nb_philo - 1);
+		return (ft_putstr_fd(MALLOC, STDERR_FILENO),
+			destroy_simulation(sim_state, data), 1);
+	exit_status = start_threads(&data, &sim_state, philosophers);
+	destroy_simulation(sim_state, data);
 	free(philosophers);
 	return (exit_status);
 }

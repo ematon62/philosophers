@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 18:55:50 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/16 19:20:13 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/17 14:58:19 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	add_to_data(char *arg, int *ptr)
 
 	atoi = ft_atoi(arg);
 	if (!is_integer(arg) || atoi < 0)
-		return (ft_putstr_fd(INT_ARG_ERROR, STDERR_FILENO), 1);
+		return (ft_putstr_fd(INTEGER_ARGUMENTS, STDERR_FILENO), 1);
 	*ptr = atoi;
 	return (0);
 }
@@ -77,10 +77,10 @@ t_data	parse(char **argv)
 		if (i == 5)
 			ptr = &data.nb_must_eat;
 		if (add_to_data(argv[i], ptr))
-			exit(EXIT_FAILURE);
+			return (data.initialized = false, data);
 		i++;
 	}
 	if (data.nb_philo < 1)
-		return (ft_putstr_fd(NB_PHILO_ERROR, STDERR_FILENO), exit(1), data);
-	return (data);
+		return (ft_putstr_fd(NB_PHILO, 2), data.initialized = false, data);
+	return (data.initialized = true, data);
 }

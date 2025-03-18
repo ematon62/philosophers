@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:58:56 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/14 15:37:56 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/18 11:06:00 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,27 @@
 # include <sys/time.h>
 # include <stdbool.h>
 
-# define NB_ARG_ERROR "philo: Incorrect number of arguments (4, optionally 5): \
+//Error messages
+# define NUMBER_OF_ARGS "philo: Incorrect number of arguments (4, optionally 5): \
 \n./philo number_of_philosophers time_to_die time_to_eat time_to_sleep\
  [number_of_times_each_philosopher_must_eat]\n"
 
-# define INT_ARG_ERROR "philo: Arguments must be positive integers\n"
-# define NB_PHILO_ERROR "philo: There must be at least 1 philosopher\n"
-# define GTOD_ERROR "philo: gettimeofday: error ocurred\n"
+# define INTEGER_ARGUMENTS "philo: Arguments must be positive integers\n"
+# define NB_PHILO "philo: There must be at least 1 philosopher\n"
+# define GETTIMEOFDAY "philo: gettimeofday: error ocurred\n"
+# define MALLOC "philo: malloc: Out of memory\n"
+# define MUTEX_INIT "philo: pthread_mutex_init: Error\n"
+
+//State change messages
+# define TAKE "%ld %d has taken a fork\n"
+# define EAT "%ld %d is eating\n"
+# define SLEEP "%ld %d is sleeping\n"
+# define THINK "%ld %d is thinking\n"
+# define DIE "%ld %d has died\n"
+
+//Durations
+# define EAT_DURATION philo->data->time_eat * 1000
+# define SLEEP_DURATION philo->data->time_sleep * 1000
 
 typedef struct s_data
 {
@@ -37,18 +51,37 @@ typedef struct s_data
 	int				time_sleep;
 	int				nb_must_eat;
 	struct timeval	start;
+	bool			initialized;
 }	t_data;
 
-//Utils
-void	ft_putstr_fd(char *s, int fd);
-int		ft_atoi(const char *nptr);
-int		ft_isspace(char c);
-int		ft_isdigit(int c);
+typedef struct s_philo
+{
+	int				id;
+	int				min_index;
+	int				max_index;
+	t_data			*data;
+	pthread_mutex_t	*forks_ptr;
+}	t_philo;
+
+//Lib
+void			ft_putstr_fd(char *s, int fd);
+int				ft_atoi(const char *nptr);
+int				ft_isspace(char c);
+int				ft_isdigit(int c);
+void			ft_free_toodee(void **ptr);
 
 //Parsing
-t_data	parse(char **argv);
+t_data			parse(char **argv);
 
 //Simulation
-int		simulation(t_data data);
+int				simulation(t_data data);
+t_philo			**init_philo(t_data *data, pthread_mutex_t **forks);
+pthread_mutex_t	*init_forks(int nb_philos);
+int				destroy_forks(pthread_mutex_t *forks, int end);
+
+//Utils
+int				left(int index);
+int				right(int index, int nb_philo);
+time_t			get_current_time(t_philo *philo);
 
 #endif

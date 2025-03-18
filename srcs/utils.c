@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/13 17:05:08 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/17 14:58:39 by ematon           ###   ########.fr       */
+/*   Created: 2025/03/17 10:45:02 by ematon            #+#    #+#             */
+/*   Updated: 2025/03/18 09:49:34 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	main(int argc, char **argv)
+int	left(int index)
 {
-	t_data	data;
+	return (index);
+}
 
-	if (!(argc == 5 || argc == 6))
-		return (ft_putstr_fd(NUMBER_OF_ARGS, STDERR_FILENO), EXIT_FAILURE);
-	data = parse(argv);
-	if (!data.initialized)
-		return (EXIT_FAILURE);
-	if (simulation(data))
-		return (EXIT_FAILURE);
-	return (EXIT_SUCCESS);
+int	right(int index, int nb_philo)
+{
+	return ((index + nb_philo - 1) % (nb_philo));
+}
+
+time_t	get_current_time(t_philo *philo)
+{
+	struct timeval	current;
+
+	gettimeofday(&current, NULL);
+	return ((current.tv_sec - philo->data->start.tv_sec) * 1000);
 }

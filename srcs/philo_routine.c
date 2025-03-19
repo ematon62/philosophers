@@ -6,79 +6,101 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 13:34:10 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/19 04:25:33 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/19 13:53:28 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-bool	check_if_continue(t_state *state)
+static bool	check_if_continue(t_state *state)
 {
 	bool	do_i_continue;
 
-	pthread_mutex_lock(&state->satiat);
-	do_i_continue = state->all_alive;
-	pthread_mutex_unlock(&state->satiat);
+	pthread_mutex_lock(&state->end_mutex);
+	do_i_continue = state->finished;
+	pthread_mutex_unlock(&state->end_mutex);
 	return (do_i_continue);
 }
 
-bool	sleep_paralysis(long int time, t_state *state)
+static bool	sleep_paralysis(long int time, t_state *state)
 {
 	int	n;
 
 	n = 0;
-	if (!check_if_continue(state))
-		return (true);
-	while (n < time)
+	while (time > 0)
 	{
 		if (!check_if_continue(state))
 			return (true);
-		usleep(100);
-		n += 100;
+		time -= 20;
+		usleep(20000);
 	}
-	if (!check_if_continue(state))
-		return (true);
 	return (false);
 }
 
-int	event(char *s, t_philo *philo)
+static int	eat_n_sleep(t_philo *philo)
 {
+	pthread_mutex_lock(&philo->state->last_time_eaten[philo->id]);
+	philo->nb_times_eaten += 1;
+	pthread_mutex_unlock(&philo->state->last_time_eaten[philo->id]);
 	pthread_mutex_lock(&philo->state->write_perm);
-	printf(s, get_time_since_start(philo), philo->id + 1);
+	philo->time_since_last = philo->state->current;
 	pthread_mutex_unlock(&philo->state->write_perm);
-	return (true);
+	event(EAT, philo->state, philo->id);
+	if (sleep_paralysis(philo->data->time_eat, philo->state))
+	{
+		pthread_mutex_unlock(&philo->state->forks_ptr[philo->max_index]);
+		pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->state->forks_ptr[philo->max_index]);
+	pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
+	event(SLEEP, philo->state, philo->id);
+	if (sleep_paralysis(philo->data->time_sleep, philo->state))
+		return (1);
+	return (0);
 }
 
+static int	think(t_philo *philo)
+{
+	if (!check_if_continue(philo->state))
+		return (1);
+	event(THINK, philo->state, philo->id);
+	pthread_mutex_lock(&philo->state->forks_ptr[philo->min_index]);
+	if (!check_if_continue(philo->state))
+	{
+		pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
+		return (1);
+	}
+	event(TAKE, philo->state, philo->id);
+	if (philo->data->nb_philo == 1)
+	{
+		pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
+		return (usleep(philo->data->time_die * 1000), 1);
+	}
+	if (!check_if_continue(philo->state))
+	{
+		pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
+		return (1);
+	}
+	pthread_mutex_lock(&philo->state->forks_ptr[philo->max_index]);
+	event(TAKE, philo->state, philo->id);
+	return (0);
+}
 
 void	*routine(void *input)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)input;
+	usleep(1000 * philo->id);
 	while (1)
 	{
-		event(THINK, philo);
-		pthread_mutex_lock(&philo->state->forks_ptr[philo->min_index]);
-		event(TAKE, philo);
-		pthread_mutex_lock(&philo->state->forks_ptr[philo->max_index]);
-		event(TAKE, philo);
-		pthread_mutex_lock(&philo->state->last_time_eaten[philo->id]);
-		philo->nb_times_eaten += 1;
-		philo->time_since_last = get_time_since_last_meal(philo);
-		pthread_mutex_unlock(&philo->state->last_time_eaten[philo->id]);
-		event(EAT, philo);
-		if (sleep_paralysis(philo->data->time_eat * 1000, philo->state))
-		{
-			pthread_mutex_unlock(&philo->state->forks_ptr[philo->max_index]);
-			pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
+		if (!check_if_continue(philo->state) || think(philo))
 			break ;
-		}
-		pthread_mutex_unlock(&philo->state->forks_ptr[philo->max_index]);
-		pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
-		event(SLEEP, philo);
-		if (sleep_paralysis(philo->data->time_sleep * 1000, philo->state))
+		if (!check_if_continue(philo->state) || eat_n_sleep(philo))
+			break ;
+		if (!check_if_continue(philo->state))
 			break ;
 	}
-	event(DIE, philo);
 	return (NULL);
 }

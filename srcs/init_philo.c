@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 09:23:25 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/19 04:44:52 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/19 07:38:38 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static t_philo	*get_thread_data(int i, t_data *data, t_state *simstate)
 		philo->min_index = right_index;
 	}
 	philo->state = simstate;
-	philo->time_since_last = data->start.tv_usec;
+	philo->time_since_last = 0;
 	philo->nb_times_eaten = 0;
 	return (philo);
 }

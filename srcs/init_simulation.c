@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 09:21:14 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/19 03:34:23 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/19 13:40:42 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int	destroy_simulation(t_state state, t_data data)
 	destroy_mutexes(state.forks_ptr, data.nb_philo - 1);
 	destroy_mutexes(state.last_time_eaten, data.nb_philo - 1);
 	pthread_mutex_destroy(&state.write_perm);
+	free(state.satiated_philos);
 	return (0);
 }
 
@@ -78,34 +79,27 @@ t_state	init_simulation(t_data data)
 {
 	t_state	state;
 
-	state.data = &data;
-	state.satiated_philos = init_satiat(state.data->nb_philo);
+	state.finished = true;
+	state.initialized = false;
+	state.satiated_philos = init_satiat(data.nb_philo);
 	if (!state.satiated_philos)
-		return (ft_putstr_fd(MALLOC, STDERR_FILENO), state.initialized = false,
-			state);
-	state.all_alive = true;
+		return (ft_putstr_fd(MALLOC, STDERR_FILENO), state);
 	state.forks_ptr = init_mutexes(data.nb_philo);
 	if (!state.forks_ptr)
-		return (free(state.satiated_philos),
-			state.initialized = false, state);
+		return (free(state.satiated_philos), state);
 	state.last_time_eaten = init_mutexes(data.nb_philo);
 	if (!state.last_time_eaten)
 		return (destroy_mutexes(state.forks_ptr, data.nb_philo - 1),
-			free(state.satiated_philos),
-			state.initialized = false, state);
+			free(state.satiated_philos), state);
 	if (pthread_mutex_init(&state.write_perm, NULL))
-		return (ft_putstr_fd(MUTEX_INIT, STDERR_FILENO),
-			free(state.satiated_philos),
+		return (ft_putstr_fd(MUTEX_INIT, 2), free(state.satiated_philos),
 			destroy_mutexes(state.forks_ptr, data.nb_philo - 1),
-			destroy_mutexes(state.last_time_eaten, data.nb_philo - 1),
-			state.initialized = false, state);
-	if (pthread_mutex_init(&state.satiat, NULL))
-		return (ft_putstr_fd(MUTEX_INIT, STDERR_FILENO),
-			free(state.satiated_philos),
-			pthread_mutex_destroy(&state.satiat),
+			destroy_mutexes(state.last_time_eaten, data.nb_philo - 1), state);
+	if (pthread_mutex_init(&state.end_mutex, NULL))
+		return (ft_putstr_fd(MUTEX_INIT, 2), free(state.satiated_philos),
+			pthread_mutex_destroy(&state.write_perm),
 			destroy_mutexes(state.forks_ptr, data.nb_philo - 1),
-			destroy_mutexes(state.last_time_eaten, data.nb_philo - 1),
-			state.initialized = false, state);
+			destroy_mutexes(state.last_time_eaten, data.nb_philo - 1), state);
 	state.initialized = true;
 	return (state);
 }

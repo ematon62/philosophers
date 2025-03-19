@@ -13,6 +13,7 @@ SRCS := $(SRCS_PATH)/main.c \
 		$(SRCS_PATH)/init_philo.c \
 		$(SRCS_PATH)/simulation.c \
 		$(SRCS_PATH)/philo_routine.c \
+		$(SRCS_PATH)/monitoring.c \
 		$(SRCS_PATH)/utils.c \
 		$(SRCS_PATH)/lib/ft_atoi.c \
 		$(SRCS_PATH)/lib/ft_isspace.c \

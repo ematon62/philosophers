@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:58:56 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/19 12:49:55 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/19 15:58:07 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,30 +79,30 @@ typedef struct s_philo
 }	t_philo;
 
 //Lib
-void			ft_putstr_fd(char *s, int fd);
-int				ft_atoi(const char *nptr);
-int				ft_isspace(char c);
-int				ft_isdigit(int c);
-void			ft_free_toodee(void **ptr);
+void		ft_putstr_fd(char *s, int fd);
+int			ft_atoi(const char *nptr);
+int			ft_isspace(char c);
+int			ft_isdigit(int c);
+void		ft_free_toodee(void **ptr);
 
 //Parsing
-t_data			parse(char **argv);
+t_data		parse(char **argv);
 
 //Simulation
-t_state			init_simulation(t_data data);
-int				destroy_simulation(t_state state, t_data data);
-t_philo			**init_philo(t_data *data, t_state *simstate);
-int				simulation(t_data data);
-void			*routine(void *input);
+t_state		init_simulation(t_data data);
+int			destroy_simulation(t_state *state, t_data data);
+t_philo		**init_philo(t_data *data, t_state *simstate);
+int			simulation(t_data data);
+void		*routine(void *input);
 
 //Monitoring
-void			*monitor_routine(void *input);
-int				event(char *s, t_state *state, int id);
+void		*monitor_routine(void *input);
+int			event(char *s, t_state *state, int id);
 
 //Utils
-int				left(int index);
-int				right(int index, int nb_philo);
-time_t			get_time_since_start(t_data *data);
-time_t			get_time_since_last_meal(t_philo *data);
+int			left(int index);
+int			right(int index, int nb_philo);
+time_t		get_time_since_start(t_data *data);
+time_t		get_time_since_last_meal(t_philo *data);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 09:21:14 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/19 13:40:42 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/19 15:56:58 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,13 @@ static pthread_mutex_t	*init_mutexes(int nb_philos)
 	return (forks);
 }
 
-int	destroy_simulation(t_state state, t_data data)
+int	destroy_simulation(t_state *state, t_data data)
 {
-	destroy_mutexes(state.forks_ptr, data.nb_philo - 1);
-	destroy_mutexes(state.last_time_eaten, data.nb_philo - 1);
-	pthread_mutex_destroy(&state.write_perm);
-	free(state.satiated_philos);
+	destroy_mutexes(state->forks_ptr, data.nb_philo - 1);
+	destroy_mutexes(state->last_time_eaten, data.nb_philo - 1);
+	pthread_mutex_destroy(&state->write_perm);
+	pthread_mutex_destroy(&state->end_mutex);
+	free(state->satiated_philos);
 	return (0);
 }
 

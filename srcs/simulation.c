@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 14:20:24 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/19 13:03:54 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/19 15:58:15 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ int	start_threads(t_data *data, t_state *simstate,
 	pthread_t		monitor;
 
 	i = 0;
-	(void)monitor;
-	(void)philosophers;
 	philo_data = init_philo(data, simstate);
 	if (!philo_data)
 		return (ft_putstr_fd(MALLOC, STDERR_FILENO), 1);
@@ -58,9 +56,9 @@ int	simulation(t_data data)
 	philosophers = malloc(sizeof(pthread_t) * data.nb_philo);
 	if (!philosophers)
 		return (ft_putstr_fd(MALLOC, STDERR_FILENO),
-			destroy_simulation(state, data), 1);
+			destroy_simulation(&state, data), 1);
 	exit_status = start_threads(&data, &state, philosophers);
-	destroy_simulation(state, data);
+	destroy_simulation(&state, data);
 	free(philosophers);
 	return (exit_status);
 }

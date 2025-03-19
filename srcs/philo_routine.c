@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 13:34:10 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/19 13:53:28 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/19 15:13:57 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ static int	eat_n_sleep(t_philo *philo)
 	}
 	pthread_mutex_unlock(&philo->state->forks_ptr[philo->max_index]);
 	pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
+	if (!check_if_continue(philo->state))
+		return (1);
 	event(SLEEP, philo->state, philo->id);
 	if (sleep_paralysis(philo->data->time_sleep, philo->state))
 		return (1);
@@ -83,6 +85,12 @@ static int	think(t_philo *philo)
 		return (1);
 	}
 	pthread_mutex_lock(&philo->state->forks_ptr[philo->max_index]);
+	if (!check_if_continue(philo->state))
+	{
+		pthread_mutex_unlock(&philo->state->forks_ptr[philo->max_index]);
+		pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
+		return (1);
+	}
 	event(TAKE, philo->state, philo->id);
 	return (0);
 }
@@ -95,6 +103,8 @@ void	*routine(void *input)
 	usleep(1000 * philo->id);
 	while (1)
 	{
+		if (!check_if_continue(philo->state))
+			break ;
 		if (!check_if_continue(philo->state) || think(philo))
 			break ;
 		if (!check_if_continue(philo->state) || eat_n_sleep(philo))

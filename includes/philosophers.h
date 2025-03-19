@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:58:56 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/18 16:15:55 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/19 04:48:33 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,21 @@
 # define THINK "%ld %d is thinking\n"
 # define DIE "%ld %d has died\n"
 
-typedef struct s_sim_state
+typedef struct s_philo	t_philo;
+typedef struct s_data	t_data;
+
+typedef struct s_state
 {
 	pthread_mutex_t	*forks_ptr;
-	pthread_mutex_t	write_perm;
 	pthread_mutex_t	*last_time_eaten;
+	pthread_mutex_t	write_perm;
+	pthread_mutex_t	satiat;
+	t_philo			**philos;
+	t_data			*data;
+	bool			all_alive;
+	bool			*satiated_philos;
 	bool			initialized;
-}	t_sim_state;
+}	t_state;
 
 typedef struct s_data
 {
@@ -63,9 +71,10 @@ typedef struct s_philo
 	int				id;
 	int				min_index;
 	int				max_index;
+	int				nb_times_eaten;
 	t_data			*data;
-	long int		time_since_last;
-	t_sim_state		*sim_state;
+	time_t			time_since_last;
+	t_state			*state;
 }	t_philo;
 
 //Lib
@@ -79,16 +88,17 @@ void			ft_free_toodee(void **ptr);
 t_data			parse(char **argv);
 
 //Simulation
-t_sim_state		init_simulation(t_data data);
-int				destroy_simulation(t_sim_state sim_state, t_data data);
-t_philo			**init_philo(t_data *data, t_sim_state *simstate);
+t_state			init_simulation(t_data data);
+int				destroy_simulation(t_state state, t_data data);
+t_philo			**init_philo(t_data *data, t_state *simstate);
 int				simulation(t_data data);
 void			*routine(void *input);
 
 //Utils
 int				left(int index);
 int				right(int index, int nb_philo);
+time_t			get_time_since_start(t_philo *data);
 time_t			get_time_since_last_meal(t_philo *philo);
-void			event(char *s, t_philo *philo);
+int				event(char *s, t_philo *philo);
 
 #endif

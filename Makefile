@@ -10,7 +10,7 @@ MAKEFLAGS += --no-print-directory
 SRCS := $(SRCS_PATH)/main.c \
 		$(SRCS_PATH)/parsing.c \
 		$(SRCS_PATH)/init_simulation.c \
-		$(SRCS_PATH)/thread_data.c \
+		$(SRCS_PATH)/init_philo.c \
 		$(SRCS_PATH)/simulation.c \
 		$(SRCS_PATH)/philo_routine.c \
 		$(SRCS_PATH)/utils.c \

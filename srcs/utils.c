@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 10:45:02 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/18 16:16:02 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/19 04:45:53 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,11 @@ int	right(int index, int nb_philo)
 time_t	get_time_since_start(t_philo *philo)
 {
 	struct timeval	current;
+	time_t			time;
 
 	gettimeofday(&current, NULL);
-	return ((current.tv_sec - philo->data->start.tv_sec) * 1000);
+	time = ((current.tv_usec - philo->data->start.tv_usec));
+	return (time);
 }
 
 time_t	get_time_since_last_meal(t_philo *philo)
@@ -36,15 +38,6 @@ time_t	get_time_since_last_meal(t_philo *philo)
 	time_t			time;
 
 	gettimeofday(&current, NULL);
-	pthread_mutex_lock(&philo->sim_state->last_time_eaten[philo->id]);
-	time = ((current.tv_sec - philo->time_since_last) * 1000);
-	pthread_mutex_unlock(&philo->sim_state->last_time_eaten[philo->id]);
+	time = ((current.tv_usec - philo->time_since_last) / 1000);
 	return (time);
-}
-
-void	event(char *s, t_philo *philo)
-{
-	pthread_mutex_lock(&philo->sim_state->write_perm);
-	printf(s, get_time_since_start(philo), philo->id + 1);
-	pthread_mutex_unlock(&philo->sim_state->write_perm);
 }

@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   thread_data.c                                      :+:      :+:    :+:   */
+/*   init_philo.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 09:23:25 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/18 16:15:01 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/19 04:44:52 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static t_philo	*get_thread_data(int i, t_data *data, t_sim_state *simstate)
+static t_philo	*get_thread_data(int i, t_data *data, t_state *simstate)
 {
 	t_philo	*philo;
 	int		left_index;
@@ -35,11 +35,13 @@ static t_philo	*get_thread_data(int i, t_data *data, t_sim_state *simstate)
 		philo->max_index = left_index;
 		philo->min_index = right_index;
 	}
-	philo->sim_state = simstate;
+	philo->state = simstate;
+	philo->time_since_last = data->start.tv_usec;
+	philo->nb_times_eaten = 0;
 	return (philo);
 }
 
-t_philo	**init_philo(t_data *data, t_sim_state *simstate)
+t_philo	**init_philo(t_data *data, t_state *simstate)
 {
 	t_philo	**philo_data;
 	int		i;

@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:58:56 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/19 15:58:07 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/19 18:35:55 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,13 @@ t_data		parse(char **argv);
 t_state		init_simulation(t_data data);
 int			destroy_simulation(t_state *state, t_data data);
 t_philo		**init_philo(t_data *data, t_state *simstate);
+
 int			simulation(t_data data);
 void		*routine(void *input);
+bool		check_if_continue(t_state *state);
+bool		sleep_paralysis(long int time, t_state *state);
+int			eat_n_sleep(t_philo *philo);
+int			think(t_philo *philo);
 
 //Monitoring
 void		*monitor_routine(void *input);

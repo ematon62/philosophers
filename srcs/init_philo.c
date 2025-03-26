@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 09:23:25 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/19 07:38:38 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/26 16:39:48 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,14 @@
 static t_philo	*get_thread_data(int i, t_data *data, t_state *simstate)
 {
 	t_philo	*philo;
-	int		left_index;
-	int		right_index;
 
 	philo = malloc(sizeof(t_philo));
 	if (!philo)
 		return (NULL);
 	philo->id = i;
 	philo->data = data;
-	left_index = left(i);
-	right_index = right(i, data->nb_philo);
-	if (left_index < right_index)
-	{
-		philo->max_index = right_index;
-		philo->min_index = left_index;
-	}
-	else
-	{
-		philo->max_index = left_index;
-		philo->min_index = right_index;
-	}
+	philo->left_index = left(i);
+	philo->right_index = right(i, philo->data->nb_philo);
 	philo->state = simstate;
 	philo->time_since_last = 0;
 	philo->nb_times_eaten = 0;

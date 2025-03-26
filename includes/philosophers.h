@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:58:56 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/19 18:35:55 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/26 16:39:45 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ typedef struct s_data
 typedef struct s_philo
 {
 	int				id;
-	int				min_index;
-	int				max_index;
+	int				left_index;
+	int				right_index;
 	int				nb_times_eaten;
 	t_data			*data;
 	time_t			time_since_last;
@@ -96,7 +96,7 @@ t_philo		**init_philo(t_data *data, t_state *simstate);
 int			simulation(t_data data);
 void		*routine(void *input);
 bool		check_if_continue(t_state *state);
-bool		sleep_paralysis(long int time, t_state *state);
+// bool		sleep_paralysis(long int time, t_state *state);
 int			eat_n_sleep(t_philo *philo);
 int			think(t_philo *philo);
 

@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 18:33:45 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/19 18:37:31 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/26 16:55:15 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,12 @@ int	eat_n_sleep(t_philo *philo)
 	event(EAT, philo->state, philo->id);
 	if (sleep_paralysis(philo->data->time_eat, philo->state))
 	{
-		pthread_mutex_unlock(&philo->state->forks_ptr[philo->max_index]);
-		pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
+		pthread_mutex_unlock(&philo->state->forks_ptr[philo->right_index]);
+		pthread_mutex_unlock(&philo->state->forks_ptr[philo->left_index]);
 		return (1);
 	}
-	pthread_mutex_unlock(&philo->state->forks_ptr[philo->max_index]);
-	pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
+	pthread_mutex_unlock(&philo->state->forks_ptr[philo->right_index]);
+	pthread_mutex_unlock(&philo->state->forks_ptr[philo->left_index]);
 	if (!check_if_continue(philo->state))
 		return (1);
 	event(SLEEP, philo->state, philo->id);
@@ -66,12 +66,12 @@ static int	case_one_philo(t_philo *philo)
 {
 	if (philo->data->nb_philo == 1)
 	{
-		pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
+		pthread_mutex_unlock(&philo->state->forks_ptr[philo->left_index]);
 		return (usleep(philo->data->time_die * 1000), 1);
 	}
 	if (!check_if_continue(philo->state))
 	{
-		pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
+		pthread_mutex_unlock(&philo->state->forks_ptr[philo->left_index]);
 		return (1);
 	}
 	return (0);
@@ -82,20 +82,20 @@ int	think(t_philo *philo)
 	if (!check_if_continue(philo->state))
 		return (1);
 	event(THINK, philo->state, philo->id);
-	pthread_mutex_lock(&philo->state->forks_ptr[philo->min_index]);
+	pthread_mutex_lock(&philo->state->forks_ptr[philo->left_index]);
 	if (!check_if_continue(philo->state))
 	{
-		pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
+		pthread_mutex_unlock(&philo->state->forks_ptr[philo->left_index]);
 		return (1);
 	}
 	event(TAKE, philo->state, philo->id);
 	if (case_one_philo(philo))
 		return (1);
-	pthread_mutex_lock(&philo->state->forks_ptr[philo->max_index]);
+	pthread_mutex_lock(&philo->state->forks_ptr[philo->right_index]);
 	if (!check_if_continue(philo->state))
 	{
-		pthread_mutex_unlock(&philo->state->forks_ptr[philo->max_index]);
-		pthread_mutex_unlock(&philo->state->forks_ptr[philo->min_index]);
+		pthread_mutex_unlock(&philo->state->forks_ptr[philo->right_index]);
+		pthread_mutex_unlock(&philo->state->forks_ptr[philo->left_index]);
 		return (1);
 	}
 	event(TAKE, philo->state, philo->id);

@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 18:33:45 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/26 16:55:15 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/26 17:10:24 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,17 @@ bool	check_if_continue(t_state *state)
 	return (do_i_continue);
 }
 
-bool	sleep_paralysis(long int time, t_state *state)
+bool	sleep_paralysis(long int time, t_philo *philo)
 {
-	int	n;
+	time_t	remainder;
 
-	n = 0;
-	while (time > 0)
+	remainder = get_time_since_last_meal(philo);
+	if (remainder + time > philo->data->time_die)
 	{
-		if (!check_if_continue(state))
-			return (true);
-		time -= 20;
-		usleep(20000);
+		usleep((remainder + time) * 1000);
+		return (check_if_continue(philo->state));
 	}
+	usleep(time * 1000);
 	return (false);
 }
 
@@ -46,7 +45,7 @@ int	eat_n_sleep(t_philo *philo)
 	philo->time_since_last = philo->state->current;
 	pthread_mutex_unlock(&philo->state->write_perm);
 	event(EAT, philo->state, philo->id);
-	if (sleep_paralysis(philo->data->time_eat, philo->state))
+	if (sleep_paralysis(philo->data->time_eat, philo))
 	{
 		pthread_mutex_unlock(&philo->state->forks_ptr[philo->right_index]);
 		pthread_mutex_unlock(&philo->state->forks_ptr[philo->left_index]);
@@ -57,7 +56,7 @@ int	eat_n_sleep(t_philo *philo)
 	if (!check_if_continue(philo->state))
 		return (1);
 	event(SLEEP, philo->state, philo->id);
-	if (sleep_paralysis(philo->data->time_sleep, philo->state))
+	if (sleep_paralysis(philo->data->time_sleep, philo))
 		return (1);
 	return (0);
 }

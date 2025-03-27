@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 18:33:45 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/26 17:10:24 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/27 16:24:02 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ int	think(t_philo *philo)
 	if (!check_if_continue(philo->state))
 		return (1);
 	event(THINK, philo->state, philo->id);
+	if (!check_if_continue(philo->state))
+		return (1);
 	pthread_mutex_lock(&philo->state->forks_ptr[philo->left_index]);
 	if (!check_if_continue(philo->state))
 	{

@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 13:34:10 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/26 16:56:31 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/27 16:16:37 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,16 @@ void	*routine(void *input)
 
 	philo = (t_philo *)input;
 	if (philo->id % 2)
-		usleep(1000);
+		usleep(500);
 	while (1)
 	{
 		if (!check_if_continue(philo->state))
 			break ;
-		if (!check_if_continue(philo->state) || think(philo))
+		if (think(philo))
 			break ;
-		if (!check_if_continue(philo->state) || eat_n_sleep(philo))
+		if (!check_if_continue(philo->state))
+			break ;
+		if (eat_n_sleep(philo))
 			break ;
 		if (!check_if_continue(philo->state))
 			break ;

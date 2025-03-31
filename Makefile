@@ -4,7 +4,7 @@ CC := cc
 SRCS_PATH := srcs
 
 INC_FLAGS := -Iincludes
-CFLAGS := -Wall -Wextra -Werror $(INC_FLAGS)
+CFLAGS := -Wall -Wextra -Werror -fsanitize=thread $(INC_FLAGS)
 MAKEFLAGS += --no-print-directory
 
 SRCS := $(SRCS_PATH)/main.c \

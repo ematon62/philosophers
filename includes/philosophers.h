@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:58:56 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/26 17:10:21 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:43:32 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ typedef struct s_state
 	t_data			*data;
 	bool			finished;
 	time_t			current;
-	bool			*satiated_philos;
 	bool			initialized;
 }	t_state;
 
@@ -96,7 +95,8 @@ t_philo		**init_philo(t_data *data, t_state *simstate);
 int			simulation(t_data data);
 void		*routine(void *input);
 bool		check_if_continue(t_state *state);
-int			eat_n_sleep(t_philo *philo);
+int			eat(t_philo *philo);
+int			sleepers(t_philo *philo);
 int			think(t_philo *philo);
 
 //Monitoring

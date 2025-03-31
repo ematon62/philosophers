@@ -6,13 +6,13 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 09:17:33 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/19 13:37:30 by ematon           ###   ########.fr       */
+/*   Updated: 2025/03/31 19:44:12 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static bool	have_all_eaten_enough(bool *array, t_state *state)
+static bool	have_all_eaten_enough(t_state *state)
 {
 	int	i;
 	int	n;
@@ -21,9 +21,10 @@ static bool	have_all_eaten_enough(bool *array, t_state *state)
 	n = 0;
 	while (i < state->data->nb_philo)
 	{
+		pthread_mutex_lock(&state->last_time_eaten[i]);
 		if (state->philos[i]->nb_times_eaten == state->data->nb_must_eat)
-			array[i] = true;
-		n += array[i];
+			n++;
+		pthread_mutex_unlock(&state->last_time_eaten[i]);
 		i++;
 	}
 	return (n == state->data->nb_philo);
@@ -65,7 +66,7 @@ void	*monitor_routine(void *input)
 		pthread_mutex_lock(&state->write_perm);
 		state->current = get_time_since_start(state->data);
 		pthread_mutex_unlock(&state->write_perm);
-		if (have_all_eaten_enough(state->satiated_philos, state)
+		if (have_all_eaten_enough(state)
 			|| !are_still_alive(state))
 		{
 			pthread_mutex_lock(&state->end_mutex);

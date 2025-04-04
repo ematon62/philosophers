@@ -6,7 +6,7 @@
 /*   By: ematon <ematon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 09:17:33 by ematon            #+#    #+#             */
-/*   Updated: 2025/03/31 19:44:12 by ematon           ###   ########.fr       */
+/*   Updated: 2025/04/04 13:52:27 by ematon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static bool	have_all_eaten_enough(t_state *state)
 	while (i < state->data->nb_philo)
 	{
 		pthread_mutex_lock(&state->last_time_eaten[i]);
-		if (state->philos[i]->nb_times_eaten == state->data->nb_must_eat)
+		if (state->philos[i]->nb_times_eaten >= state->data->nb_must_eat)
 			n++;
 		pthread_mutex_unlock(&state->last_time_eaten[i]);
 		i++;
